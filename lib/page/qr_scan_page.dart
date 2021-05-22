@@ -14,6 +14,7 @@ class QRScanPage extends StatefulWidget {
 
 class _QRScanPageState extends State<QRScanPage> {
   String qrCode = 'Unknown';
+  TextEditingController numberController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -29,18 +30,20 @@ class _QRScanPageState extends State<QRScanPage> {
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: TextField(
+                        controller: numberController,
+                        obscureText: false,
                         decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      hintText: 'enter mobile number',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        borderSide: BorderSide(
-                          width: 0,
-                          style: BorderStyle.none,
-                        ),
-                      ),
-                    )),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'enter mobile number',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50),
+                            borderSide: BorderSide(
+                              width: 0,
+                              style: BorderStyle.none,
+                            ),
+                          ),
+                        )),
                   ),
                   SizedBox(
                     height: 10,
@@ -117,6 +120,6 @@ class _QRScanPageState extends State<QRScanPage> {
   }
 
   Future<void> addToQueue() async {
-    print(123);
+    print(numberController.text);
   }
 }
