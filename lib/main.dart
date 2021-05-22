@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           primaryColor: Colors.red,
           scaffoldBackgroundColor: Colors.grey[600],
         ),
-        home: MainPage(title: title),
+        home: QRScanPage(),
       );
 }
 
