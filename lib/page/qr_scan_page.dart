@@ -24,6 +24,33 @@ class _QRScanPageState extends State<QRScanPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: TextField(
+                        decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      hintText: 'enter mobile number',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(50),
+                        borderSide: BorderSide(
+                          width: 0,
+                          style: BorderStyle.none,
+                        ),
+                      ),
+                    )),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ButtonWidget(text: 'Add To Q', onClicked: () => addToQueue()),
+                ],
+              ),
+              SizedBox(
+                height: 50,
+              ),
               Text(
                 'Scan Result',
                 style: TextStyle(
@@ -87,5 +114,9 @@ class _QRScanPageState extends State<QRScanPage> {
     } on PlatformException {
       qrCode = 'Failed to get platform version.';
     }
+  }
+
+  Future<void> addToQueue() async {
+    print(123);
   }
 }
