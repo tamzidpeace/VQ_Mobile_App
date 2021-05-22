@@ -31,6 +31,8 @@ class _QRScanPageState extends State<QRScanPage> {
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: TextField(
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                         controller: numberController,
                         obscureText: false,
                         decoration: InputDecoration(
@@ -121,7 +123,6 @@ class _QRScanPageState extends State<QRScanPage> {
   }
 
   Future<void> addToQueue() async {
-
     var mobile = numberController.text;
     try {
       var url = Uri.parse('https://user1.truhoist.com/api/qr-code/scan');
