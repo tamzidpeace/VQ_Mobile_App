@@ -21,6 +21,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
+        routes: {
+          '/home': (context) => QRScanPage(),
+        },
         debugShowCheckedModeBanner: false,
         title: title,
         theme: ThemeData(
@@ -128,9 +131,7 @@ class _MainPageState extends State<MainPage> {
       Map data = jsonDecode(response.body);
       print(data);
       if (data['message'] == 'employee successfully logged in!') {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => QRScanPage(),
-        ));
+        Navigator.of(context).pushReplacementNamed('/home');
       } else {
         _showToast(context, data['message']);
       }
