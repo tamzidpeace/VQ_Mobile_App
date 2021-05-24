@@ -22,8 +22,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: title,
         theme: ThemeData(
-          primaryColor: Colors.red,
-          scaffoldBackgroundColor: Colors.grey[600],
+          primaryColor: Colors.blue,
+          scaffoldBackgroundColor: Colors.white,
         ),
         home: MainPage(title: title,),
       );
@@ -41,24 +41,73 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) => Scaffold(
+
         appBar: AppBar(
           title: Text(widget.title),
           centerTitle: true,
         ),
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ButtonWidget(
-                text: 'Scan QR Code',
-                onClicked: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => QRScanPage(),
-                )),
-              ),
-            ],
-          ),
-        ),
+          child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Center(
+                child: ListView(
+                  children: <Widget>[
+                    Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.all(10),
+                        child: Text(
+                          'Login',
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 30),
+                        )),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      child: TextField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Email',
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: TextField(
+                        obscureText: true,
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Password',
+                        ),
+                      ),
+                    ),
+                    Container(
+                        height: 50,
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        margin: EdgeInsets.only(top: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ButtonWidget(
+                              text: 'Login',
+                              onClicked: () => Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => QRScanPage(),
+                              )),
+                            ),
+                          ],
+                        ),
+                    ),
+                  ],
+                ),
+              )),
+        )
       );
 }
