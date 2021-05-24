@@ -116,12 +116,16 @@ class _QRScanPageState extends State<QRScanPage> {
         );
         Map data = jsonDecode(response.body);
         print(data);
+        print(qrCode);
         _showToast(context, data['message']);
         setState(() {
           this.qrCode =
               'QR: ' + qrCode + '\n\n' + 'Response: ' + data['message'];
         });
-        Future.delayed(const Duration(seconds: 5), () => scanQRCode());
+        if (qrCode != '-1') {
+          print(qrCode);
+          Future.delayed(const Duration(seconds: 5), () => scanQRCode());
+        }
         //scanQRCode();
       });
     } on PlatformException {
