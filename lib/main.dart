@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:qr_code_scanner_example/page/qr_create_page.dart';
 import 'package:qr_code_scanner_example/page/qr_scan_page.dart';
 import 'package:qr_code_scanner_example/widget/button_widget.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,9 +20,12 @@ void main() {
 
 class MyApp extends StatelessWidget {
   static final String title = 'Virtual Queue';
+//  static final String res = _read();
+  static final String initial_route = '/';
 
   @override
   Widget build(BuildContext context) => MaterialApp(
+        initialRoute: initial_route,
         routes: {
           '/home': (context) => QRScanPage(),
         },
@@ -50,6 +55,22 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  /* @override
+  void initState() {
+    super.initState();
+    var res = _read();
+    print(res);
+    */ /*if (res == '1') {
+      Timer.run(() {
+        Navigator.of(context).pushNamed('/home');
+      });
+      print(res);
+    } else {
+      print(res);
+    }*/ /*
+    //YOUR CHANGE PAGE METHOD HERE
+  }*/
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -131,6 +152,7 @@ class _MainPageState extends State<MainPage> {
       Map data = jsonDecode(response.body);
       print(data);
       if (data['message'] == 'employee successfully logged in!') {
+        // _save(data['token']);
         Navigator.of(context).pushReplacementNamed('/home');
       } else {
         _showToast(context, data['message']);
@@ -149,3 +171,17 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
+
+/*_save(token) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('token', '1');
+  //print('saved');
+}
+
+_read() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  //Return String
+  String token = prefs.getString('token');
+  //print('read');
+  return token;
+}*/
