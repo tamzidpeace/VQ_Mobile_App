@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        initialRoute: initial_route,
+        initialRoute: '/home',
         routes: {
           '/home': (context) => QRScanPage(),
         },
