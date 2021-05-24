@@ -52,62 +52,62 @@ class _MainPageState extends State<MainPage> {
           title: Text(widget.title),
           centerTitle: true,
         ),
-        body: Center(
-          child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Center(
-                child: ListView(
-                  children: <Widget>[
-                    Container(
-                        alignment: Alignment.center,
-                        padding: EdgeInsets.all(10),
-                        child: Text(
-                          'Login',
-                          style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 30),
-                        )),
-                    Container(
+        body: Padding(
+            padding: EdgeInsets.fromLTRB(10,100,10, 0),
+            child: Center(
+              child: ListView(
+                children: <Widget>[
+                  Container(
+                      alignment: Alignment.center,
                       padding: EdgeInsets.all(10),
-                      child: TextField(
-                        controller: nameController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Email',
+                      child: Text(
+                        'VQ Login',
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 30,
+                            decoration: TextDecoration.underline,
                         ),
+                      )),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: TextField(
+                      controller: nameController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Email',
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                      child: TextField(
-                        obscureText: true,
-                        controller: passwordController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Password',
-                        ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: TextField(
+                      obscureText: true,
+                      controller: passwordController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Password',
                       ),
                     ),
-                    Container(
-                        height: 50,
-                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        margin: EdgeInsets.only(top: 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ButtonWidget(
-                              text: 'Login',
-                              onClicked: () => Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => QRScanPage(),
-                              )),
-                            ),
-                          ],
-                        ),
-                    ),
-                  ],
-                ),
-              )),
-        )
+                  ),
+                  Container(
+                      height: 50,
+                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      margin: EdgeInsets.only(top: 20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ButtonWidget(
+                            text: 'Login',
+                            onClicked: () => Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) => QRScanPage(),
+                            )),
+                          ),
+                        ],
+                      ),
+                  ),
+                ],
+              ),
+            ))
       );
 }
