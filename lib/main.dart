@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           primaryColor: Colors.red,
           scaffoldBackgroundColor: Colors.grey[600],
         ),
-        home: QRScanPage(),
+        home: MainPage(title: title,),
       );
 }
 
@@ -45,6 +45,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
+          centerTitle: true,
         ),
         body: Center(
           child: Column(
