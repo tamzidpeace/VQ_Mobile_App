@@ -4,6 +4,8 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:qr_code_scanner_example/widget/button_widget.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
 
 import '../main.dart';
 
@@ -15,6 +17,7 @@ class QRScanPage extends StatefulWidget {
 class _QRScanPageState extends State<QRScanPage> {
   String qrCode = 'ready to scan';
   TextEditingController numberController = new TextEditingController();
+  AudioPlayer audioPlayer = AudioPlayer();
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -90,57 +93,57 @@ class _QRScanPageState extends State<QRScanPage> {
 
   Future<void> scanQRCode() async {
     try {
-      //normal scan
-      /*final qrCode = await FlutterBarcodeScanner.scanBarcode(
-        '#ff6666',
-        'Cancel',
-        true,
-        ScanMode.QR,
-      );*/
-
       //continuous scan
       var qrCode = '';
       FlutterBarcodeScanner.getBarcodeStreamReceiver(
-              "#ff6666", "Cancel", false, ScanMode.DEFAULT)
-          .listen((barcode) {
-        //print(barcode);
+              "#ff6666", "Cancel", false, ScanMode.QR)
+          .listen((barcode) async {
         qrCode = barcode;
+        var data = await validateQrCode(qrCode);
+        print(data);
 
-        //rest work
-
-        setState(() async {
-          //fetching api data
-
-          var url = Uri.parse(
-              'https://user1.truhoist.com/api/qr-code/validate?id=39dsdewr&employee_id=2');
-          var token =
-              'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNDFjOWVkNTIzNDJiYzNlOTM2MjVlNGRjNzQ0MzRjMGFlZmRhMTEwYzU3NTgyNTM2OWY0NGRiNmE3MThjZmU0ZTZiMTY0ZmRiNmYwNTBiMDkiLCJpYXQiOjE2MjE2NzI4MzcsIm5iZiI6MTYyMTY3MjgzNywiZXhwIjoxNjUzMjA4ODM3LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.kav4JgtiMfXPnR2x_XuMk8bfXW8ySEM-m0w3MWof5Get2_YQ2CjUfy_mj5eiEWlEwn3kySBDL0oF-Tv1JoNVOJ34CnViN-zEFQIETxY2qluA3CDrHJRpElJeeYFcRwgw7xvCyiLTHf4cVBtWzZvyWipHII6A6vzFU7lt-GTHBKvR9sKGhGQIntCAEkm3yNjeHwRYcdcolrfzkyFiqDnjlegmBCEFXovQdIBml2rq-13j6sPKpQvC1bQoVcU-EdB0rUmVy_oWRkGLClYwBLNmkb1SHFFRiLCc4FNpkvD2dynsPt70n2PT5Nxfp9wXSGZW7NSqsC0gOiQal-edjQSt4VNs91HAGMB-C2jlZt0HPD22EuRFGuM4hxuOzRpGV55Bqkd0nm4Ep6h9rpKA-u3P3uFGhy7zdm6lZuu-ZV_G2BeSOBFa_Gv7AjkCBREL2SC8n5qsSzhJDGZTRIoNEVpvUSOKyNBE2jzUhJm3wPAY1T7M0-Wyu2Ce953z5DnobovGy8PqROeMPx7ek0EFrTil4b2SfQwtwWFkcB7bD4V_7z3u-C9ldcMS4OyTWvXkp-8fiXpcw5G732YNBN-z3mTbNWHkMBm8-FJ-_SRkPd6c981idladHvHF5-InfvH96sNVuzONc8mV6ICpKOkHgTKfhYV9nPEuTn3UPyI6TWfW3rc';
-          var response = await http.post(
-            url,
-            headers: {'Authorization': 'Bearer $token'},
-            body: {'id': qrCode, 'employee_id': '2'},
-          );
-
-          Map data = jsonDecode(response.body);
-          print(data);
-          print(qrCode);
-          _showToast(context, data['message']);
-          setState(() {
+        //_showToast(context, data['message']);
+        setState(() {
+          if (qrCode != '-1')
             this.qrCode =
                 'QR: ' + qrCode + '\n\n' + 'Response: ' + data['message'];
-          });
-
-          /*if (qrCode != '-1') {
-          print(qrCode);
-          Future.delayed(const Duration(seconds: 5), () => scanQRCode());
-        }*/
         });
+
+        if (data['message'] == "this qr code doesn't have access now" &&
+            qrCode != '-1') {
+          AssetsAudioPlayer.newPlayer().open(
+            Audio("audio/not_valid.mp3"),
+            autoStart: true,
+            showNotification: true,
+          );
+        } else if (data['message'] != "this qr code doesn't have access now" &&
+            qrCode != '-1') {
+          AssetsAudioPlayer.newPlayer().open(
+            Audio("audio/valid.mp3"),
+            autoStart: true,
+            showNotification: true,
+          );
+        }
       });
 
       if (!mounted) return;
     } on PlatformException {
       qrCode = 'Failed to get platform version.';
     }
+  }
+
+  Future<Map> validateQrCode(qrCode) async {
+    var url = Uri.parse(
+        'https://user1.truhoist.com/api/qr-code/validate?id=39dsdewr&employee_id=2');
+    var token =
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNDFjOWVkNTIzNDJiYzNlOTM2MjVlNGRjNzQ0MzRjMGFlZmRhMTEwYzU3NTgyNTM2OWY0NGRiNmE3MThjZmU0ZTZiMTY0ZmRiNmYwNTBiMDkiLCJpYXQiOjE2MjE2NzI4MzcsIm5iZiI6MTYyMTY3MjgzNywiZXhwIjoxNjUzMjA4ODM3LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.kav4JgtiMfXPnR2x_XuMk8bfXW8ySEM-m0w3MWof5Get2_YQ2CjUfy_mj5eiEWlEwn3kySBDL0oF-Tv1JoNVOJ34CnViN-zEFQIETxY2qluA3CDrHJRpElJeeYFcRwgw7xvCyiLTHf4cVBtWzZvyWipHII6A6vzFU7lt-GTHBKvR9sKGhGQIntCAEkm3yNjeHwRYcdcolrfzkyFiqDnjlegmBCEFXovQdIBml2rq-13j6sPKpQvC1bQoVcU-EdB0rUmVy_oWRkGLClYwBLNmkb1SHFFRiLCc4FNpkvD2dynsPt70n2PT5Nxfp9wXSGZW7NSqsC0gOiQal-edjQSt4VNs91HAGMB-C2jlZt0HPD22EuRFGuM4hxuOzRpGV55Bqkd0nm4Ep6h9rpKA-u3P3uFGhy7zdm6lZuu-ZV_G2BeSOBFa_Gv7AjkCBREL2SC8n5qsSzhJDGZTRIoNEVpvUSOKyNBE2jzUhJm3wPAY1T7M0-Wyu2Ce953z5DnobovGy8PqROeMPx7ek0EFrTil4b2SfQwtwWFkcB7bD4V_7z3u-C9ldcMS4OyTWvXkp-8fiXpcw5G732YNBN-z3mTbNWHkMBm8-FJ-_SRkPd6c981idladHvHF5-InfvH96sNVuzONc8mV6ICpKOkHgTKfhYV9nPEuTn3UPyI6TWfW3rc';
+    var response = await http.post(
+      url,
+      headers: {'Authorization': 'Bearer $token'},
+      body: {'id': qrCode, 'employee_id': '2'},
+    );
+    Map data = jsonDecode(response.body);
+    return data;
   }
 
   Future<void> addToQueue() async {
@@ -174,5 +177,16 @@ class _QRScanPageState extends State<QRScanPage> {
         content: Text(message),
       ),
     );
+  }
+
+  play() async {
+    int result = await audioPlayer.play(
+        'https://transom.org/wp-content/uploads/2004/03/200206.hodgman8.mp3');
+    if (result == 1) {
+      // success
+      print('audio ok');
+    } else {
+      print('aduio not ok');
+    }
   }
 }
