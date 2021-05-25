@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
-
 import '../main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class QRScanPage extends StatefulWidget {
   @override
@@ -102,7 +102,20 @@ class _QRScanPageState extends State<QRScanPage> {
         var data = await validateQrCode(qrCode);
         print(data);
 
-        //_showToast(context, data['message']);
+        //check previous qr
+        var previous_qr = await getStringValuesSF('qr');
+        if (previous_qr == qrCode) {
+          print('same qr');
+          /*AssetsAudioPlayer.newPlayer().open(
+            Audio("audio/previous.mp3"),
+            autoStart: true,
+            showNotification: true,
+          );*/
+          return;
+        } else {
+          print('new qr');
+        }
+
         setState(() {
           if (qrCode != '-1')
             this.qrCode =
@@ -123,7 +136,15 @@ class _QRScanPageState extends State<QRScanPage> {
             autoStart: true,
             showNotification: true,
           );
+        } else if (qrCode == '-1') {
+          AssetsAudioPlayer.newPlayer().open(
+            Audio("audio/paused.mp3"),
+            autoStart: true,
+            showNotification: true,
+          );
         }
+        await addStringToSF('qr', qrCode);
+        //await new Future.delayed(const Duration(seconds: 5));
       });
 
       if (!mounted) return;
@@ -188,5 +209,19 @@ class _QRScanPageState extends State<QRScanPage> {
     } else {
       print('aduio not ok');
     }
+  }
+
+  //add value to sf
+  addStringToSF(key, value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(key, value);
+  }
+
+  //get value from sf
+  getStringValuesSF(key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    String stringValue = prefs.getString(key);
+    return stringValue;
   }
 }
