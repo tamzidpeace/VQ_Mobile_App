@@ -130,9 +130,17 @@ class _QRScanPageState extends State<QRScanPage> {
             showNotification: true,
           );
         } else if (data['message'] != "this qr code doesn't have access now" &&
-            qrCode != '-1') {
+            qrCode != '-1' &&
+            data['message'] != "none is in the queue") {
           AssetsAudioPlayer.newPlayer().open(
             Audio("audio/valid.mp3"),
+            autoStart: true,
+            showNotification: true,
+          );
+        } else if (data['message'] == "none is in the queue" &&
+            qrCode != '-1') {
+          AssetsAudioPlayer.newPlayer().open(
+            Audio("audio/not_valid.mp3"),
             autoStart: true,
             showNotification: true,
           );

@@ -8,24 +8,36 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(MyApp());
+  var res = await getStringValuesSF('token');
+  print(res);
+  var _route;
+  if (res == null)
+    _route = '/';
+  else
+    _route = '/home';
+  runApp(MyApp(_route));
 }
 
 class MyApp extends StatelessWidget {
   static final String title = 'Virtual Queue';
-//  static final String res = _read();
-  static final String initial_route = '/';
+
+  var data;
+  MyApp(res) {
+    this.data = res;
+  }
+
+  //var String initial_route = data;
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        initialRoute: '/home',
+        initialRoute: data,
         routes: {
           '/home': (context) => QRScanPage(),
         },
@@ -56,10 +68,10 @@ class _MainPageState extends State<MainPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  /* @override
-  void initState() {
+  /*@override
+  void initState() async {
     super.initState();
-    var res = _read();
+    var res = await getStringValuesSF('token');
     print(res);
     */ /*if (res == '1') {
       Timer.run(() {
@@ -68,7 +80,7 @@ class _MainPageState extends State<MainPage> {
       print(res);
     } else {
       print(res);
-    }*/ /*
+    } */ /*
     //YOUR CHANGE PAGE METHOD HERE
   }*/
 
@@ -152,7 +164,8 @@ class _MainPageState extends State<MainPage> {
       Map data = jsonDecode(response.body);
       print(data);
       if (data['message'] == 'employee successfully logged in!') {
-        // _save(data['token']);
+        //saving token in sf
+        await addStringToSF('token', data['token']);
         Navigator.of(context).pushReplacementNamed('/home');
       } else {
         _showToast(context, data['message']);
@@ -172,16 +185,16 @@ class _MainPageState extends State<MainPage> {
   }
 }
 
-/*_save(token) async {
+//add value to sf
+addStringToSF(key, value) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString('token', '1');
-  //print('saved');
+  prefs.setString(key, value);
 }
 
-_read() async {
+//get value from sf
+getStringValuesSF(key) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   //Return String
-  String token = prefs.getString('token');
-  //print('read');
-  return token;
-}*/
+  String stringValue = prefs.getString(key);
+  return stringValue;
+}
