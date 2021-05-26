@@ -68,22 +68,6 @@ class _MainPageState extends State<MainPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  /*@override
-  void initState() async {
-    super.initState();
-    var res = await getStringValuesSF('token');
-    print(res);
-    */ /*if (res == '1') {
-      Timer.run(() {
-        Navigator.of(context).pushNamed('/home');
-      });
-      print(res);
-    } else {
-      print(res);
-    } */ /*
-    //YOUR CHANGE PAGE METHOD HERE
-  }*/
-
   @override
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
