@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_code_scanner_example/page/qr_scan_page.dart';
+import 'package:qr_code_scanner_example/page/subdomain.dart';
 import 'package:qr_code_scanner_example/widget/button_widget.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -16,30 +17,35 @@ void main() async {
   ]);
 
   var res = await getStringValuesSF('token');
+  var subdomain = await getStringValuesSF('subdomain');
   print(res);
   var _route;
   if (res == null)
     _route = '/';
   else
     _route = '/home';
-  runApp(MyApp(_route));
+  runApp(MyApp(_route, subdomain));
 }
 
 class MyApp extends StatelessWidget {
   static final String title = 'Virtual Queue';
 
   var data;
-  MyApp(res) {
+  var subdomain;
+  MyApp(res, subdomain) {
     this.data = res;
+    this.subdomain = subdomain;
   }
 
   //var String initial_route = data;
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        initialRoute: data,
+        // initialRoute: data,
+        initialRoute: '/subdomain',
         routes: {
           '/home': (context) => QRScanPage(),
+          '/subdomain': (context) => Subdomain(),
         },
         debugShowCheckedModeBanner: false,
         title: title,
@@ -137,25 +143,29 @@ class _MainPageState extends State<MainPage> {
   Future<void> login() async {
     var email = nameController.text;
     var password = passwordController.text;
-
+    var subdomain = await getStringValuesSF('subdomain');
+    //print(subdomain);
     try {
-      var url = Uri.parse('https://user1.truhoist.com/api/employee/login');
+      var url = Uri.parse('https://' + subdomain + '/api/employee/login');
+      //print(url);
 
       var response = await http.post(
         url,
         body: {'email': email, 'password': password},
       );
       Map data = jsonDecode(response.body);
-      print(data);
+      print(data['data']['id']);
       if (data['message'] == 'employee successfully logged in!') {
         //saving token in sf
         await addStringToSF('token', data['token']);
+        await addIntToSF('employee_id', data['data']['id']);
         Navigator.of(context).pushReplacementNamed('/home');
       } else {
         _showToast(context, data['message']);
       }
     } catch (e) {
       _showToast(context, 'An error occurred!');
+      print(e);
     }
   }
 
@@ -181,4 +191,9 @@ getStringValuesSF(key) async {
   //Return String
   String stringValue = prefs.getString(key);
   return stringValue;
+}
+
+addIntToSF(key, value) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setInt(key, value);
 }

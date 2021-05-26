@@ -157,12 +157,14 @@ class _QRScanPageState extends State<QRScanPage> {
   }
 
   Future<Map> validateQrCode(qrCode) async {
-    var url = Uri.parse('https://user1.truhoist.com/api/qr-code/validate');
+    var subdomain = await getStringValuesSF('subdomain');
+    var employee_id = await getIntValuesSF('employee_id');
+    var url = Uri.parse('https://' + subdomain + '/api/qr-code/validate');
     var token = await getStringValuesSF('token');
     var response = await http.post(
       url,
       headers: {'Authorization': 'Bearer $token'},
-      body: {'id': qrCode, 'employee_id': '2'},
+      body: {'id': qrCode, 'employee_id': employee_id.toString()},
     );
     Map data = jsonDecode(response.body);
     return data;
@@ -170,13 +172,15 @@ class _QRScanPageState extends State<QRScanPage> {
 
   Future<void> addToQueue() async {
     var mobile = numberController.text;
+    var subdomain = await getStringValuesSF('subdomain');
+    var employee_id = await getIntValuesSF('employee_id');
     try {
-      var url = Uri.parse('https://user1.truhoist.com/api/qr-code/scan');
+      var url = Uri.parse('https://' + subdomain + '/api/qr-code/scan');
       var token = await getStringValuesSF('token');
       var response = await http.post(
         url,
         headers: {'Authorization': 'Bearer $token'},
-        body: {'employee_id': '1', 'phone': mobile},
+        body: {'employee_id': employee_id.toString(), 'phone': mobile},
       );
       Map data = jsonDecode(response.body);
       setState(() {
@@ -185,6 +189,7 @@ class _QRScanPageState extends State<QRScanPage> {
       _showToast(context, 'Added to queue');
     } catch (e) {
       _showToast(context, 'An error occurred!');
+      print(e);
     }
   }
 
@@ -219,6 +224,13 @@ class _QRScanPageState extends State<QRScanPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
     String stringValue = prefs.getString(key);
+    return stringValue;
+  }
+
+  getIntValuesSF(key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    var stringValue = prefs.getInt(key);
     return stringValue;
   }
 }
