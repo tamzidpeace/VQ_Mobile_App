@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:qr_code_scanner_example/page/loading.dart';
 import 'package:qr_code_scanner_example/page/qr_scan_page.dart';
 import 'package:qr_code_scanner_example/page/subdomain.dart';
 import 'package:qr_code_scanner_example/widget/button_widget.dart';
@@ -41,11 +42,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        initialRoute: data,
-        // initialRoute: '/subdomain',
+        // initialRoute: data,
+        initialRoute: '/loading',
         routes: {
           '/home': (context) => QRScanPage(),
           '/subdomain': (context) => Subdomain(),
+          '/loading': (context) => Loading(),
         },
         debugShowCheckedModeBanner: false,
         title: title,
