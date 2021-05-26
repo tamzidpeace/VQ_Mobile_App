@@ -21,7 +21,7 @@ void main() async {
   print(res);
   var _route;
   if (res == null)
-    _route = '/';
+    _route = '/subdomain';
   else
     _route = '/home';
   runApp(MyApp(_route, subdomain));
@@ -41,8 +41,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        // initialRoute: data,
-        initialRoute: '/subdomain',
+        initialRoute: data,
+        // initialRoute: '/subdomain',
         routes: {
           '/home': (context) => QRScanPage(),
           '/subdomain': (context) => Subdomain(),

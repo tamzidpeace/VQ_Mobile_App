@@ -22,9 +22,40 @@ class _QRScanPageState extends State<QRScanPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-            title: Text(MyApp.title),
-            centerTitle: true,
-            automaticallyImplyLeading: false),
+          title: Text(MyApp.title),
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          actions: [
+            Theme(
+              data: Theme.of(context).copyWith(
+                  textTheme: TextTheme().apply(bodyColor: Colors.black),
+                  dividerColor: Colors.white,
+                  iconTheme: IconThemeData(color: Colors.white)),
+              child: PopupMenuButton<int>(
+                color: Colors.blue,
+                itemBuilder: (context) => [
+                  PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                  PopupMenuDivider(),
+                  PopupMenuItem<int>(
+                      value: 2,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.logout,
+                            color: Colors.red,
+                          ),
+                          const SizedBox(
+                            width: 7,
+                          ),
+                          Text("Logout")
+                        ],
+                      )),
+                ],
+                onSelected: (item) => selectedItemOpr(item),
+              ),
+            ),
+          ],
+        ),
         body: Center(
           child: ListView(
             // mainAxisAlignment: MainAxisAlignment.center,
@@ -190,6 +221,14 @@ class _QRScanPageState extends State<QRScanPage> {
     } catch (e) {
       _showToast(context, 'An error occurred!');
       print(e);
+    }
+  }
+
+  void selectedItemOpr(item) {
+    if (item == 1) {
+      print('settings');
+    } else if (item == 2) {
+      print('logout');
     }
   }
 
