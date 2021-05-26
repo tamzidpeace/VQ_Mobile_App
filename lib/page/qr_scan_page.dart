@@ -224,11 +224,32 @@ class _QRScanPageState extends State<QRScanPage> {
     }
   }
 
-  void selectedItemOpr(item) {
+  void selectedItemOpr(item) async {
     if (item == 1) {
       print('settings');
     } else if (item == 2) {
       print('logout');
+      await logout();
+    }
+  }
+
+  Future<void> logout() async {
+    var subdomain = await getStringValuesSF('subdomain');
+    try {
+      var url = Uri.parse('https://' + subdomain + '/api/auth/logout');
+      var token = await getStringValuesSF('token');
+      var response = await http.post(
+        url,
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      Map data = jsonDecode(response.body);
+      print(data);
+      //_showToast(context, 'User Logged Out');
+      addStringToSF('token', '');
+      Navigator.pushReplacementNamed(context, '/subdomain');
+    } catch (e) {
+      _showToast(context, 'An error occurred!');
+      print(e);
     }
   }
 

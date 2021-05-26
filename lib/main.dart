@@ -20,7 +20,7 @@ void main() async {
   var subdomain = await getStringValuesSF('subdomain');
   print(res);
   var _route;
-  if (res == null)
+  if (res == null || res == '')
     _route = '/subdomain';
   else
     _route = '/home';
