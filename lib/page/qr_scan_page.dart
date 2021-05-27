@@ -19,6 +19,10 @@ class _QRScanPageState extends State<QRScanPage> {
   TextEditingController numberController = new TextEditingController();
   AudioPlayer audioPlayer = AudioPlayer();
   bool isVisible = false;
+  var name = 'arafat';
+  var data = {};
+
+  //var data = ModalRoute.of(context).settings.arguments;
 
   void isLoading() {
     setState(() {
@@ -28,106 +32,117 @@ class _QRScanPageState extends State<QRScanPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text(MyApp.title),
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-          actions: [
-            Theme(
-              data: Theme.of(context).copyWith(
-                  textTheme: TextTheme().apply(bodyColor: Colors.black),
-                  dividerColor: Colors.white,
-                  iconTheme: IconThemeData(color: Colors.white)),
-              child: PopupMenuButton<int>(
-                color: Colors.blue,
-                itemBuilder: (context) => [
-                  PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                      value: 2,
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.logout,
-                            color: Colors.red,
-                          ),
-                          const SizedBox(
-                            width: 7,
-                          ),
-                          Text("Logout")
-                        ],
-                      )),
-                ],
-                onSelected: (item) => selectedItemOpr(item),
+  Widget build(BuildContext context) {
+    data = ModalRoute.of(context).settings.arguments;
+    print(data);
+
+    bool is_manager = true;
+
+    if (data['type'] == 'scanner') is_manager = false;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(MyApp.title),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        actions: [
+          Theme(
+            data: Theme.of(context).copyWith(
+                textTheme: TextTheme().apply(bodyColor: Colors.black),
+                dividerColor: Colors.white,
+                iconTheme: IconThemeData(color: Colors.white)),
+            child: PopupMenuButton<int>(
+              color: Colors.blue,
+              itemBuilder: (context) => [
+                PopupMenuItem<int>(
+                    value: 1, child: Text(data['type'] + ' ' + data['name'])),
+                PopupMenuDivider(),
+                PopupMenuItem<int>(
+                    value: 2,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.logout,
+                          color: Colors.red,
+                        ),
+                        const SizedBox(
+                          width: 7,
+                        ),
+                        Text("Logout")
+                      ],
+                    )),
+              ],
+              onSelected: (item) => selectedItemOpr(item),
+            ),
+          ),
+        ],
+      ),
+      body: Center(
+        child: ListView(
+          children: <Widget>[
+            Visibility(
+              visible: isVisible,
+              child: Container(
+                margin: EdgeInsets.only(bottom: 20.0),
+                height: 1.0,
+                width: 1.0,
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.grey[900],
+                ),
               ),
             ),
-          ],
-        ),
-        body: Center(
-          child: ListView(
-            children: <Widget>[
-              Visibility(
-                visible: isVisible,
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 20.0),
-                  height: 1.0,
-                  width: 1.0,
-                  child: CircularProgressIndicator(
-                    backgroundColor: Colors.grey[900],
-                  ),
-                ),
-              ),
-              Column(
-                children: [
-                  Container(
-                    padding: EdgeInsets.fromLTRB(20, 50, 20, 20),
-                    child: TextField(
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      controller: numberController,
-                      obscureText: false,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Enter Mobile Number',
-                      ),
+            Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.fromLTRB(20, 50, 20, 20),
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    controller: numberController,
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Enter Mobile Number',
                     ),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  ButtonWidget(text: 'Add To Q', onClicked: () => addToQueue()),
-                ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                ButtonWidget(text: 'Add To Q', onClicked: () => addToQueue()),
+              ],
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            Center(
+              child: Text(
+                'Scan Result',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              SizedBox(
-                height: 50,
-              ),
-              Center(
+            ),
+            SizedBox(height: 8),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
                 child: Text(
-                  'Scan Result',
+                  '$qrCode',
                   style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
               ),
-              SizedBox(height: 8),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Text(
-                    '$qrCode',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 72),
-              Padding(
+            ),
+            SizedBox(height: 72),
+            Visibility(
+              visible: is_manager,
+              child: Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                 child: ButtonWidget(
@@ -135,10 +150,12 @@ class _QRScanPageState extends State<QRScanPage> {
                   onClicked: () => scanQRCode(),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 
   Future<void> scanQRCode() async {
     try {
