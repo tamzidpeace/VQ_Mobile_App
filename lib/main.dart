@@ -184,10 +184,8 @@ class _MainPageState extends State<MainPage> {
         await addIntToSF('employee_id', data['data']['id']);
         await addStringToSF('name', data['data']['name']);
         await addStringToSF('type', data['data']['role']['name']);
-        Navigator.of(context).pushReplacementNamed('/home', arguments: {
-          'name': data['data']['name'],
-          'type': data['data']['role']['name']
-        });
+        Navigator.of(context).pushReplacementNamed('/home');
+        _showToast(context, data['message']);
       } else {
         isLoading();
         _showToast(context, data['message']);

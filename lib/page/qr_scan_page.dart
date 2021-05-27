@@ -19,10 +19,6 @@ class _QRScanPageState extends State<QRScanPage> {
   TextEditingController numberController = new TextEditingController();
   AudioPlayer audioPlayer = AudioPlayer();
   bool isVisible = false;
-  var name = 'arafat';
-  var data = {};
-
-  //var data = ModalRoute.of(context).settings.arguments;
 
   void isLoading() {
     setState(() {
@@ -33,139 +29,138 @@ class _QRScanPageState extends State<QRScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    data = ModalRoute.of(context).settings.arguments;
-    print(data);
-
-    bool is_manager = true;
-
-    if (data != null && data['type'] == 'scanner') is_manager = false;
-
-    var employee_type;
-    var employee_name;
-
-    if (data == null) {
-      employee_name = 'user';
-      employee_type = 'Hi, ';
-    } else {
-      employee_name = data['name'];
-      employee_type = data['type'];
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(MyApp.title),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        actions: [
-          Theme(
-            data: Theme.of(context).copyWith(
-                textTheme: TextTheme().apply(bodyColor: Colors.black),
-                dividerColor: Colors.white,
-                iconTheme: IconThemeData(color: Colors.white)),
-            child: PopupMenuButton<int>(
-              color: Colors.blue,
-              itemBuilder: (context) => [
-                PopupMenuItem<int>(
-                    value: 1, child: Text(employee_type + ' ' + employee_name)),
-                PopupMenuDivider(),
-                PopupMenuItem<int>(
-                    value: 2,
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.logout,
-                          color: Colors.red,
-                        ),
-                        const SizedBox(
-                          width: 7,
-                        ),
-                        Text("Logout")
+    return FutureBuilder<Map>(
+        future: getStringValuesSFNT(),
+        builder: (context, AsyncSnapshot<Map> snapshot) {
+          if (snapshot.hasData) {
+            var e_name = snapshot.data['name'];
+            var e_type = snapshot.data['type'];
+            var can_scan_qr = true;
+            if (e_type == 'scanner') can_scan_qr = false;
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(MyApp.title),
+                centerTitle: true,
+                automaticallyImplyLeading: false,
+                actions: [
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                        textTheme: TextTheme().apply(bodyColor: Colors.black),
+                        dividerColor: Colors.white,
+                        iconTheme: IconThemeData(color: Colors.white)),
+                    child: PopupMenuButton<int>(
+                      color: Colors.blue,
+                      itemBuilder: (context) => [
+                        PopupMenuItem<int>(
+                            value: 1, child: Text(e_type + ' ' + e_name)),
+                        PopupMenuDivider(),
+                        PopupMenuItem<int>(
+                            value: 2,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.logout,
+                                  color: Colors.red,
+                                ),
+                                const SizedBox(
+                                  width: 7,
+                                ),
+                                Text("Logout")
+                              ],
+                            )),
                       ],
-                    )),
-              ],
-              onSelected: (item) => selectedItemOpr(item),
-            ),
-          ),
-        ],
-      ),
-      body: Center(
-        child: ListView(
-          children: <Widget>[
-            Visibility(
-              visible: isVisible,
-              child: Container(
-                margin: EdgeInsets.only(bottom: 20.0),
-                height: 1.0,
-                width: 1.0,
-                child: CircularProgressIndicator(
-                  backgroundColor: Colors.grey[900],
-                ),
-              ),
-            ),
-            Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.fromLTRB(20, 50, 20, 20),
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    controller: numberController,
-                    obscureText: false,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Enter Mobile Number',
+                      onSelected: (item) => selectedItemOpr(item),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                ButtonWidget(text: 'Add To Q', onClicked: () => addToQueue()),
-              ],
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Center(
-              child: Text(
-                'Scan Result',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
+                ],
+              ),
+              body: Center(
+                child: ListView(
+                  children: <Widget>[
+                    Visibility(
+                      visible: isVisible,
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 20.0),
+                        height: 1.0,
+                        width: 1.0,
+                        child: CircularProgressIndicator(
+                          backgroundColor: Colors.grey[900],
+                        ),
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.fromLTRB(20, 50, 20, 20),
+                          child: TextField(
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            controller: numberController,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Enter Mobile Number',
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        ButtonWidget(
+                            text: 'Add To Q', onClicked: () => addToQueue()),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Center(
+                      child: Text(
+                        'Scan Result',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          '$qrCode',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 72),
+                    Visibility(
+                      visible: can_scan_qr,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 20),
+                        child: ButtonWidget(
+                          text: 'Start QR Scan',
+                          onClicked: () => scanQRCode(),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            SizedBox(height: 8),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text(
-                  '$qrCode',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 72),
-            Visibility(
-              visible: is_manager,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                child: ButtonWidget(
-                  text: 'Start QR Scan',
-                  onClicked: () => scanQRCode(),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
+
+    //return
   }
 
   Future<void> scanQRCode() async {
@@ -333,11 +328,20 @@ class _QRScanPageState extends State<QRScanPage> {
   }
 
   //get value from sf
-  getStringValuesSF(key) async {
+  Future<String> getStringValuesSF(key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
     String stringValue = prefs.getString(key);
     return stringValue;
+  }
+
+  Future<Map> getStringValuesSFNT() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    String name = prefs.getString('name');
+    String type = prefs.getString('type');
+    Map data = {'name': name, 'type': type};
+    return data;
   }
 
   getIntValuesSF(key) async {
