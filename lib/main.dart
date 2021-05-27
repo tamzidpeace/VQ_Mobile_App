@@ -95,17 +95,6 @@ class _MainPageState extends State<MainPage> {
           child: Center(
             child: ListView(
               children: <Widget>[
-                Visibility(
-                  visible: isVisible,
-                  child: Container(
-                    margin: EdgeInsets.only(bottom: 20.0),
-                    height: 1.0,
-                    width: 1.0,
-                    child: CircularProgressIndicator(
-                      backgroundColor: Colors.grey[900],
-                    ),
-                  ),
-                ),
                 Container(
                     alignment: Alignment.center,
                     padding: EdgeInsets.all(10),
@@ -115,7 +104,6 @@ class _MainPageState extends State<MainPage> {
                         color: Colors.blue,
                         fontWeight: FontWeight.w500,
                         fontSize: 30,
-                        decoration: TextDecoration.underline,
                       ),
                     )),
                 Container(
@@ -136,6 +124,17 @@ class _MainPageState extends State<MainPage> {
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Password',
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: isVisible,
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 20.0, top: 20.0),
+                    height: 1.0,
+                    width: 1.0,
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.grey[900],
                     ),
                   ),
                 ),

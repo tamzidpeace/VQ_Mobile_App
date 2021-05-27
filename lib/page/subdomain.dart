@@ -36,17 +36,6 @@ class _SubdomainState extends State<Subdomain> {
             child: Center(
               child: ListView(
                 children: <Widget>[
-                  Visibility(
-                    visible: isVisible,
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: 20.0),
-                      height: 1.0,
-                      width: 1.0,
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.grey[900],
-                      ),
-                    ),
-                  ),
                   Container(
                       alignment: Alignment.center,
                       padding: EdgeInsets.all(10),
@@ -65,6 +54,17 @@ class _SubdomainState extends State<Subdomain> {
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Subdomain',
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: isVisible,
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 20.0, top: 20.0),
+                      height: 1.0,
+                      width: 1.0,
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.grey[900],
                       ),
                     ),
                   ),
