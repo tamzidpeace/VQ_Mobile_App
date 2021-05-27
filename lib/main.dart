@@ -75,6 +75,14 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool isVisible = false;
+
+  void isLoading() {
+    setState(() {
+      isVisible = !isVisible;
+    });
+    print(isVisible);
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -87,6 +95,17 @@ class _MainPageState extends State<MainPage> {
           child: Center(
             child: ListView(
               children: <Widget>[
+                Visibility(
+                  visible: isVisible,
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 20.0),
+                    height: 1.0,
+                    width: 1.0,
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.grey[900],
+                    ),
+                  ),
+                ),
                 Container(
                     alignment: Alignment.center,
                     padding: EdgeInsets.all(10),
@@ -148,6 +167,7 @@ class _MainPageState extends State<MainPage> {
     var subdomain = await getStringValuesSF('subdomain');
     //print(subdomain);
     try {
+      isLoading();
       var url = Uri.parse('https://' + subdomain + '/api/employee/login');
       //print(url);
 
@@ -158,14 +178,17 @@ class _MainPageState extends State<MainPage> {
       Map data = jsonDecode(response.body);
       print(data['data']['id']);
       if (data['message'] == 'employee successfully logged in!') {
+        isLoading();
         //saving token in sf
         await addStringToSF('token', data['token']);
         await addIntToSF('employee_id', data['data']['id']);
         Navigator.of(context).pushReplacementNamed('/home');
       } else {
+        isLoading();
         _showToast(context, data['message']);
       }
     } catch (e) {
+      isLoading();
       _showToast(context, 'An error occurred!');
       print(e);
     }

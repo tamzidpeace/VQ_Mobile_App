@@ -18,6 +18,14 @@ class _QRScanPageState extends State<QRScanPage> {
   String qrCode = 'ready to scan';
   TextEditingController numberController = new TextEditingController();
   AudioPlayer audioPlayer = AudioPlayer();
+  bool isVisible = false;
+
+  void isLoading() {
+    setState(() {
+      isVisible = !isVisible;
+    });
+    print(isVisible);
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -58,8 +66,18 @@ class _QRScanPageState extends State<QRScanPage> {
         ),
         body: Center(
           child: ListView(
-            // mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              Visibility(
+                visible: isVisible,
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 20.0),
+                  height: 1.0,
+                  width: 1.0,
+                  child: CircularProgressIndicator(
+                    backgroundColor: Colors.grey[900],
+                  ),
+                ),
+              ),
               Column(
                 children: [
                   Container(
@@ -206,6 +224,7 @@ class _QRScanPageState extends State<QRScanPage> {
     var subdomain = await getStringValuesSF('subdomain');
     var employee_id = await getIntValuesSF('employee_id');
     try {
+      isLoading();
       var url = Uri.parse('https://' + subdomain + '/api/qr-code/scan');
       var token = await getStringValuesSF('token');
       var response = await http.post(
@@ -217,8 +236,10 @@ class _QRScanPageState extends State<QRScanPage> {
       setState(() {
         numberController.text = '';
       });
+      isLoading();
       _showToast(context, 'Added to queue');
     } catch (e) {
+      isLoading();
       _showToast(context, 'An error occurred!');
       print(e);
     }
@@ -236,6 +257,7 @@ class _QRScanPageState extends State<QRScanPage> {
   Future<void> logout() async {
     var subdomain = await getStringValuesSF('subdomain');
     try {
+      isLoading();
       var url = Uri.parse('https://' + subdomain + '/api/auth/logout');
       var token = await getStringValuesSF('token');
       var response = await http.post(
@@ -246,8 +268,10 @@ class _QRScanPageState extends State<QRScanPage> {
       print(data);
       //_showToast(context, 'User Logged Out');
       addStringToSF('token', '');
+      isLoading();
       Navigator.pushReplacementNamed(context, '/subdomain');
     } catch (e) {
+      isLoading();
       _showToast(context, 'An error occurred!');
       print(e);
     }
