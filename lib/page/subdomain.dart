@@ -68,22 +68,27 @@ class _SubdomainState extends State<Subdomain> {
   }
 
   void checkSubdomain() async {
-    var subdomain = subdomainController.text;
-    var url =
-        Uri.parse('https://user1.truhoist.com/api/employee/get-subdomain');
-    var response = await http.post(
-      url,
-      body: {'subdomain': subdomain},
-    );
-    Map data = jsonDecode(response.body);
+    try {
+      var subdomain = subdomainController.text;
+      var url =
+          Uri.parse('https://user1.truhoist.com/api/employee/get-subdomain');
+      var response = await http.post(
+        url,
+        body: {'subdomain': subdomain},
+      );
+      Map data = jsonDecode(response.body);
 
-    if (data['success'] == 'true') {
-      _showToast(context, 'subdomain found!');
-      addStringToSF('subdomain', data['data']);
-      print(data['data']);
-      Navigator.pushNamed(context, '/');
-    } else {
-      _showToast(context, 'sorry, subdomain not found!');
+      if (data['success'] == 'true') {
+        _showToast(context, 'subdomain found!');
+        addStringToSF('subdomain', data['data']);
+        print(data['data']);
+        Navigator.pushNamed(context, '/');
+      } else {
+        _showToast(context, 'sorry, subdomain not found!');
+      }
+    } catch (e) {
+      print(e);
+      _showToast(context, 'something went wrong!');
     }
   }
 
