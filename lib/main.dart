@@ -182,10 +182,12 @@ class _MainPageState extends State<MainPage> {
         //saving token in sf
         await addStringToSF('token', data['token']);
         await addIntToSF('employee_id', data['data']['id']);
-        var name = await getStringValuesSF('name');
-        var type = await getStringValuesSF('type');
-        Navigator.of(context).pushReplacementNamed('/home',
-            arguments: {'name': name, 'type': type});
+        await addStringToSF('name', data['data']['name']);
+        await addStringToSF('type', data['data']['role']['name']);
+        Navigator.of(context).pushReplacementNamed('/home', arguments: {
+          'name': data['data']['name'],
+          'type': data['data']['role']['name']
+        });
       } else {
         isLoading();
         _showToast(context, data['message']);

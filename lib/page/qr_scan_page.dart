@@ -38,7 +38,18 @@ class _QRScanPageState extends State<QRScanPage> {
 
     bool is_manager = true;
 
-    if (data['type'] == 'scanner') is_manager = false;
+    if (data != null && data['type'] == 'scanner') is_manager = false;
+
+    var employee_type;
+    var employee_name;
+
+    if (data == null) {
+      employee_name = 'user';
+      employee_type = 'Hi, ';
+    } else {
+      employee_name = data['name'];
+      employee_type = data['type'];
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -55,7 +66,7 @@ class _QRScanPageState extends State<QRScanPage> {
               color: Colors.blue,
               itemBuilder: (context) => [
                 PopupMenuItem<int>(
-                    value: 1, child: Text(data['type'] + ' ' + data['name'])),
+                    value: 1, child: Text(employee_type + ' ' + employee_name)),
                 PopupMenuDivider(),
                 PopupMenuItem<int>(
                     value: 2,
@@ -287,6 +298,7 @@ class _QRScanPageState extends State<QRScanPage> {
       addStringToSF('token', '');
       isLoading();
       Navigator.pushReplacementNamed(context, '/subdomain');
+      _showToast(context, 'logged out!');
     } catch (e) {
       isLoading();
       _showToast(context, 'An error occurred!');
