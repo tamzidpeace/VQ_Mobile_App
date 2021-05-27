@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner_example/widget/button_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +14,14 @@ class Subdomain extends StatefulWidget {
 
 class _SubdomainState extends State<Subdomain> {
   TextEditingController subdomainController = TextEditingController();
+  bool isVisible = false;
+
+  void isLoading() {
+    setState(() {
+      isVisible = !isVisible;
+    });
+    print(isVisible);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +36,17 @@ class _SubdomainState extends State<Subdomain> {
             child: Center(
               child: ListView(
                 children: <Widget>[
+                  Visibility(
+                    visible: isVisible,
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 20.0),
+                      height: 1.0,
+                      width: 1.0,
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.grey[900],
+                      ),
+                    ),
+                  ),
                   Container(
                       alignment: Alignment.center,
                       padding: EdgeInsets.all(10),
@@ -69,6 +89,7 @@ class _SubdomainState extends State<Subdomain> {
 
   void checkSubdomain() async {
     try {
+      isLoading();
       var subdomain = subdomainController.text;
       var url =
           Uri.parse('https://user1.truhoist.com/api/employee/get-subdomain');
@@ -82,12 +103,15 @@ class _SubdomainState extends State<Subdomain> {
         _showToast(context, 'subdomain found!');
         addStringToSF('subdomain', data['data']);
         print(data['data']);
+        isLoading();
         Navigator.pushNamed(context, '/');
       } else {
+        isLoading();
         _showToast(context, 'sorry, subdomain not found!');
       }
     } catch (e) {
       print(e);
+      isLoading();
       _showToast(context, 'something went wrong!');
     }
   }
