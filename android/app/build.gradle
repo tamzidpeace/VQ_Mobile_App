@@ -39,12 +39,19 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.qr_code_scanner_example"
-        minSdkVersion 16
+        minSdkVersion 20
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
     }
+
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
+    }
+
+
 
     buildTypes {
         release {
@@ -53,6 +60,9 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+
+
 }
 
 flutter {

@@ -9,6 +9,7 @@ import 'package:qr_code_scanner_example/widget/button_widget.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:qr_code_scanner_example/page/qr_scan_page_2.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
           '/home': (context) => QRScanPage(),
           '/subdomain': (context) => Subdomain(),
           '/loading': (context) => Loading(),
+          '/qr-scan': (context) => QRViewExample(),
         },
         debugShowCheckedModeBanner: false,
         title: title,

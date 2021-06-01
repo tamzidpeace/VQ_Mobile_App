@@ -8,6 +8,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import '../main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:qr_code_scanner_example/page/qr_scan_page_2.dart';
 
 class QRScanPage extends StatefulWidget {
   @override
@@ -147,7 +148,9 @@ class _QRScanPageState extends State<QRScanPage> {
                             vertical: 0, horizontal: 20),
                         child: ButtonWidget(
                           text: 'Start QR Scan',
-                          onClicked: () => scanQRCode(),
+                          // onClicked: () => scanQRCode(),
+                          onClicked: () =>
+                              Navigator.pushNamed(context, '/qr-scan'),
                         ),
                       ),
                     ),
