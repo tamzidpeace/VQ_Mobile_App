@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -18,7 +19,7 @@ class _QRViewExampleState extends State<QRViewExample> {
   Barcode result;
   QRViewController controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  String scan_qr_result = '';
+  String scan_qr_result = 'ready to scan';
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
@@ -37,7 +38,21 @@ class _QRViewExampleState extends State<QRViewExample> {
       body: Column(
         children: <Widget>[
           Expanded(flex: 4, child: _buildQrView(context)),
-          Expanded(flex: 1, child: Text(scan_qr_result)),
+          Expanded(
+              flex: 1,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    scan_qr_result,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              )),
           Expanded(
             flex: 2,
             child: FittedBox(
@@ -45,11 +60,6 @@ class _QRViewExampleState extends State<QRViewExample> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  if (result != null)
-                    Text(
-                        'Barcode Type: ${describeEnum(result.format)}   Data: ${result.code}')
-                  else
-                    Text('Scan a code'),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -64,7 +74,12 @@ class _QRViewExampleState extends State<QRViewExample> {
                             child: FutureBuilder(
                               future: controller?.getFlashStatus(),
                               builder: (context, snapshot) {
-                                return Text('Flash: ${snapshot.data}');
+                                String is_on = '';
+                                if (snapshot.data == true)
+                                  is_on = 'On';
+                                else
+                                  is_on = 'Off';
+                                return Text('Flash: ${is_on} ');
                               },
                             )),
                       ),
@@ -147,18 +162,24 @@ class _QRViewExampleState extends State<QRViewExample> {
       this.controller = controller;
     });
     controller.scannedDataStream.listen((scanData) async {
-      print(scanData.code);
       await controller.pauseCamera();
       var data = await validateQrCode(scanData.code);
-      print(data);
+      AssetsAudioPlayer.newPlayer().open(
+        Audio("audio/beep.mp3"),
+        autoStart: true,
+        showNotification: true,
+      );
       setState(() {
         if (data['success'] == 'false')
-          scan_qr_result = 'Invalid Qr Code';
+          scan_qr_result = 'Invalid Qr Code!';
         else
-          scan_qr_result = data['message'];
+          scan_qr_result = 'Valid QR, Customer is now in call list!';
       });
-      //sleep(Duration(seconds: 3));
-      //await controller.resumeCamera();
+      await Future.delayed(Duration(seconds: 5));
+      await controller.resumeCamera();
+      setState(() {
+        scan_qr_result = 'ready to scan';
+      });
     });
   }
 

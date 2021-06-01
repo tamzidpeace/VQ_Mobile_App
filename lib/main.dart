@@ -20,7 +20,7 @@ void main() async {
 
   var res = await getStringValuesSF('token');
   var subdomain = await getStringValuesSF('subdomain');
-  print(res);
+  //print(res);
   var _route;
   if (res == null || res == '')
     _route = '/subdomain';
