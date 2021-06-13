@@ -4,6 +4,7 @@ import 'package:qr_code_scanner_example/widget/button_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../helper/api_helper.dart';
 
 class Subdomain extends StatefulWidget {
   const Subdomain({Key key}) : super(key: key);
@@ -91,10 +92,13 @@ class _SubdomainState extends State<Subdomain> {
     try {
       isLoading();
       var subdomain = subdomainController.text;
-      var url =
-          Uri.parse('https://user1.truhoist.com/api/employee/get-subdomain');
+      //var url = Uri.parse('https://truhoist.com/api/employee/get-subdomain');
+      final String _baseUrl = ApiHelper.localBaseDomain;
+      final String _restUrl = 'api/employee/get-subdomain';
+      final Uri _url = Uri.parse(_baseUrl + _restUrl);
+
       var response = await http.post(
-        url,
+        _url,
         body: {'subdomain': subdomain},
       );
       Map data = jsonDecode(response.body);
