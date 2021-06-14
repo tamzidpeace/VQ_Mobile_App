@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qr_code_scanner_example/page/qr_scan_page_2.dart';
+import '../helper/api_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -163,17 +164,18 @@ class _MainPageState extends State<MainPage> {
   * */
 
   Future<void> login() async {
-    var email = nameController.text;
-    var password = passwordController.text;
-    var subdomain = await getStringValuesSF('subdomain');
-    //print(subdomain);
+    final String email = nameController.text;
+    final String password = passwordController.text;
+    final String subdomain = await getStringValuesSF('subdomain');
+
+    final String _baseUrl = ApiHelper.prefix + subdomain;
+    final String _restUrl = '/api/employee/login';
+    final Uri _url = Uri.parse(_baseUrl + _restUrl);
+
     try {
       isLoading();
-      var url = Uri.parse('https://' + subdomain + '/api/employee/login');
-      //print(url);
-
       var response = await http.post(
-        url,
+        _url,
         body: {'email': email, 'password': password},
       );
       Map data = jsonDecode(response.body);
