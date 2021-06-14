@@ -247,14 +247,14 @@ class _QRScanPageState extends State<QRScanPage> {
 
   Future<void> addToQueue() async {
     var mobile = numberController.text;
-    var subdomain = await getStringValuesSF('subdomain');
-    var employee_id = await getIntValuesSF('employee_id');
+    final String subdomain = await getStringValuesSF('subdomain');
+    final int employee_id = await getIntValuesSF('employee_id');
     try {
       isLoading();
-      var url = Uri.parse('https://' + subdomain + '/api/qr-code/scan');
-      var token = await getStringValuesSF('token');
+      final Uri _url = Uri.parse('https://' + subdomain + '/api/qr-code/scan');
+      final String token = await getStringValuesSF('token');
       var response = await http.post(
-        url,
+        _url,
         headers: {'Authorization': 'Bearer $token'},
         body: {'employee_id': employee_id.toString(), 'phone': mobile},
       );
@@ -284,10 +284,10 @@ class _QRScanPageState extends State<QRScanPage> {
     var subdomain = await getStringValuesSF('subdomain');
     try {
       isLoading();
-      var url = Uri.parse('https://' + subdomain + '/api/auth/logout');
-      var token = await getStringValuesSF('token');
+      final Uri _url = Uri.parse('https://' + subdomain + '/api/auth/logout');
+      final String token = await getStringValuesSF('token');
       var response = await http.post(
-        url,
+        _url,
         headers: {'Authorization': 'Bearer $token'},
       );
       Map data = jsonDecode(response.body);
