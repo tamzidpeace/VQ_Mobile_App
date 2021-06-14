@@ -56,6 +56,9 @@ class _SubdomainState extends State<Subdomain> {
                         border: OutlineInputBorder(),
                         labelText: 'Subdomain',
                       ),
+                      onSubmitted: (subdomainController) {
+                        checkSubdomain();
+                      },
                     ),
                   ),
                   Visibility(
