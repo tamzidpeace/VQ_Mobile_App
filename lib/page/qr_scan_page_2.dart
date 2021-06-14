@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import '../helper/global_helper.dart';
 
 void main() => runApp(MaterialApp(home: QRViewExample()));
 
@@ -190,10 +191,10 @@ class _QRViewExampleState extends State<QRViewExample> {
   }
 
   Future<Map> validateQrCode(qrCode) async {
-    var subdomain = await getStringValuesSF('subdomain');
+    var subdomain = await GlobalHelper.getStringValuesSF('subdomain');
     var employee_id = await getIntValuesSF('employee_id');
     var url = Uri.parse('https://' + subdomain + '/api/qr-code/validate');
-    var token = await getStringValuesSF('token');
+    var token = await GlobalHelper.getStringValuesSF('token');
     var response = await http.post(
       url,
       headers: {'Authorization': 'Bearer $token'},
@@ -203,19 +204,19 @@ class _QRViewExampleState extends State<QRViewExample> {
     return data;
   }
 
-  //add value to sf
-  addStringToSF(key, value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(key, value);
-  }
+  // //add value to sf
+  // addStringToSF(key, value) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   prefs.setString(key, value);
+  // }
 
-  //get value from sf
-  Future<String> getStringValuesSF(key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String stringValue = prefs.getString(key);
-    return stringValue;
-  }
+  // //get value from sf
+  // Future<String> getStringValuesSF(key) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   //Return String
+  //   String stringValue = prefs.getString(key);
+  //   return stringValue;
+  // }
 
   getIntValuesSF(key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

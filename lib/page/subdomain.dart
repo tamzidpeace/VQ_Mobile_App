@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner_example/widget/button_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../helper/api_helper.dart';
+import '../helper/global_helper.dart';
 
 class Subdomain extends StatefulWidget {
   const Subdomain({Key key}) : super(key: key);
@@ -107,7 +107,7 @@ class _SubdomainState extends State<Subdomain> {
 
       if (data['success'] == 'true') {
         _showToast(context, 'subdomain found!');
-        addStringToSF('subdomain', data['data']);
+        GlobalHelper.addStringToSF('subdomain', data['data']);
         print(data['data']);
         isLoading();
         Navigator.pushNamed(context, '/');
@@ -122,18 +122,18 @@ class _SubdomainState extends State<Subdomain> {
     }
   }
 
-  //shared preference
-  addStringToSF(key, value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(key, value);
-  }
+  // //shared preference
+  // addStringToSF(key, value) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   prefs.setString(key, value);
+  // }
 
-  getStringValuesSF(key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String stringValue = prefs.getString(key);
-    return stringValue;
-  }
+  // getStringValuesSF(key) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   //Return String
+  //   String stringValue = prefs.getString(key);
+  //   return stringValue;
+  // }
 
   void _showToast(BuildContext context, message) {
     final scaffold = ScaffoldMessenger.of(context);

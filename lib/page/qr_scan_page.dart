@@ -8,7 +8,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import '../main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:qr_code_scanner_example/page/qr_scan_page_2.dart';
+import '../helper/global_helper.dart';
 
 class QRScanPage extends StatefulWidget {
   @override
@@ -181,7 +181,7 @@ class _QRScanPageState extends State<QRScanPage> {
         print(data);
 
         //check previous qr
-        var previous_qr = await getStringValuesSF('qr');
+        var previous_qr = await GlobalHelper.getStringValuesSF('qr');
         if (previous_qr == qrCode) {
           print('same qr');
           return;
@@ -224,7 +224,7 @@ class _QRScanPageState extends State<QRScanPage> {
             showNotification: true,
           );
         }
-        await addStringToSF('qr', qrCode);
+        await GlobalHelper.addStringToSF('qr', qrCode);
         //await new Future.delayed(const Duration(seconds: 5));
       });
 
@@ -235,10 +235,10 @@ class _QRScanPageState extends State<QRScanPage> {
   }
 
   Future<Map> validateQrCode(qrCode) async {
-    var subdomain = await getStringValuesSF('subdomain');
+    var subdomain = await GlobalHelper.getStringValuesSF('subdomain');
     var employee_id = await getIntValuesSF('employee_id');
     var url = Uri.parse('https://' + subdomain + '/api/qr-code/validate');
-    var token = await getStringValuesSF('token');
+    var token = await GlobalHelper.getStringValuesSF('token');
     var response = await http.post(
       url,
       headers: {'Authorization': 'Bearer $token'},
@@ -250,12 +250,12 @@ class _QRScanPageState extends State<QRScanPage> {
 
   Future<void> addToQueue() async {
     var mobile = numberController.text;
-    final String subdomain = await getStringValuesSF('subdomain');
+    final String subdomain = await GlobalHelper.getStringValuesSF('subdomain');
     final int employee_id = await getIntValuesSF('employee_id');
     try {
       isLoading();
       final Uri _url = Uri.parse('https://' + subdomain + '/api/qr-code/scan');
-      final String token = await getStringValuesSF('token');
+      final String token = await GlobalHelper.getStringValuesSF('token');
       var response = await http.post(
         _url,
         headers: {'Authorization': 'Bearer $token'},
@@ -284,11 +284,11 @@ class _QRScanPageState extends State<QRScanPage> {
   }
 
   Future<void> logout() async {
-    var subdomain = await getStringValuesSF('subdomain');
+    var subdomain = await GlobalHelper.getStringValuesSF('subdomain');
     try {
       isLoading();
       final Uri _url = Uri.parse('https://' + subdomain + '/api/auth/logout');
-      final String token = await getStringValuesSF('token');
+      final String token = await GlobalHelper.getStringValuesSF('token');
       var response = await http.post(
         _url,
         headers: {'Authorization': 'Bearer $token'},
@@ -296,7 +296,7 @@ class _QRScanPageState extends State<QRScanPage> {
       Map data = jsonDecode(response.body);
       print(data);
       //_showToast(context, 'User Logged Out');
-      addStringToSF('token', '');
+      GlobalHelper.addStringToSF('token', '');
       isLoading();
       Navigator.pushReplacementNamed(context, '/subdomain');
       _showToast(context, 'logged out!');
@@ -327,19 +327,19 @@ class _QRScanPageState extends State<QRScanPage> {
     }
   }
 
-  //add value to sf
-  addStringToSF(key, value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(key, value);
-  }
+  // //add value to sf
+  // addStringToSF(key, value) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   prefs.setString(key, value);
+  // }
 
-  //get value from sf
-  Future<String> getStringValuesSF(key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String stringValue = prefs.getString(key);
-    return stringValue;
-  }
+  // //get value from sf
+  // Future<String> getStringValuesSF(key) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   //Return String
+  //   String stringValue = prefs.getString(key);
+  //   return stringValue;
+  // }
 
   Future<Map> getStringValuesSFNT() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -8,9 +8,9 @@ import 'package:qr_code_scanner_example/page/subdomain.dart';
 import 'package:qr_code_scanner_example/widget/button_widget.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qr_code_scanner_example/page/qr_scan_page_2.dart';
 import '../helper/api_helper.dart';
+import '../helper/global_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,8 +19,8 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  var res = await getStringValuesSF('token');
-  var subdomain = await getStringValuesSF('subdomain');
+  var res = await GlobalHelper.getStringValuesSF('token');
+  var subdomain = await GlobalHelper.getStringValuesSF('subdomain');
   //print(res);
   var _route;
   if (res == null || res == '')
@@ -171,7 +171,7 @@ class _MainPageState extends State<MainPage> {
   Future<void> login() async {
     final String email = nameController.text;
     final String password = passwordController.text;
-    final String subdomain = await getStringValuesSF('subdomain');
+    final String subdomain = await GlobalHelper.getStringValuesSF('subdomain');
 
     final String _baseUrl = ApiHelper.prefix + subdomain;
     final String _restUrl = '/api/employee/login';
@@ -188,10 +188,10 @@ class _MainPageState extends State<MainPage> {
       if (data['message'] == 'employee successfully logged in!') {
         isLoading();
         //saving token in sf
-        await addStringToSF('token', data['token']);
-        await addIntToSF('employee_id', data['data']['id']);
-        await addStringToSF('name', data['data']['name']);
-        await addStringToSF('type', data['data']['role']['name']);
+        await GlobalHelper.addStringToSF('token', data['token']);
+        await GlobalHelper.addIntToSF('employee_id', data['data']['id']);
+        await GlobalHelper.addStringToSF('name', data['data']['name']);
+        await GlobalHelper.addStringToSF('type', data['data']['role']['name']);
         Navigator.of(context).pushReplacementNamed('/home');
         _showToast(context, data['message']);
       } else {
@@ -215,21 +215,21 @@ class _MainPageState extends State<MainPage> {
   }
 }
 
-//add value to sf
-addStringToSF(key, value) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString(key, value);
-}
+// //add value to sf
+// addStringToSF(key, value) async {
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   prefs.setString(key, value);
+// }
 
-//get value from sf
-getStringValuesSF(key) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  //Return String
-  String stringValue = prefs.getString(key);
-  return stringValue;
-}
+// //get value from sf
+// getStringValuesSF(key) async {
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   //Return String
+//   String stringValue = prefs.getString(key);
+//   return stringValue;
+// }
 
-addIntToSF(key, value) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setInt(key, value);
-}
+// addIntToSF(key, value) async {
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   prefs.setInt(key, value);
+// }
