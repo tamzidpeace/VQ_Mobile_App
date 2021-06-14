@@ -92,8 +92,7 @@ class _SubdomainState extends State<Subdomain> {
     try {
       isLoading();
       var subdomain = subdomainController.text;
-      //var url = Uri.parse('https://truhoist.com/api/employee/get-subdomain');
-      final String _baseUrl = ApiHelper.localBaseDomain;
+      final String _baseUrl = ApiHelper.baseDomain;
       final String _restUrl = 'api/employee/get-subdomain';
       final Uri _url = Uri.parse(_baseUrl + _restUrl);
 
