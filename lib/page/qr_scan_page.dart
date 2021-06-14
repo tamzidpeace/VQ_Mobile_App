@@ -104,6 +104,9 @@ class _QRScanPageState extends State<QRScanPage> {
                               border: OutlineInputBorder(),
                               labelText: 'Enter Mobile Number',
                             ),
+                            onSubmitted: (numberController) {
+                              addToQueue();
+                            },
                           ),
                         ),
                         SizedBox(
