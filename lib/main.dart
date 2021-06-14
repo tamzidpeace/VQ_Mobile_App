@@ -128,6 +128,11 @@ class _MainPageState extends State<MainPage> {
                       border: OutlineInputBorder(),
                       labelText: 'Password',
                     ),
+                    onSubmitted: (passwordController) {
+                      if (nameController != null) {
+                        login();
+                      }
+                    },
                   ),
                 ),
                 Visibility(
